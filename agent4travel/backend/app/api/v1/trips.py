@@ -17,6 +17,7 @@ from app.core.config import settings
 from supabase import create_client, Client
 from datetime import datetime
 import json
+from geopy.distance import great_circle
 
 
 router = APIRouter(prefix="/trips", tags=["trips"])
@@ -139,6 +140,10 @@ async def get_trips():
         )
 
 
+# Helper function to calculate distance between two coordinates
+def get_distance(coord1, coord2):
+    return great_circle(coord1, coord2).kilometers
+
 @router.get("/{trip_id}", response_model=TripDetailResponse)
 async def get_trip_detail(trip_id: str):
     """获取旅行计划详情（公开访问，无需登录）"""
@@ -171,7 +176,27 @@ async def get_trip_detail(trip_id: str):
         
         daily_plans = []
         for itin in sorted_itineraries:
-            activities_data = json.loads(itin["activities"]) if isinstance(itin["activities"], str) else itin["activities"]
+            activities_data = json.loads(itin.get("activities", "[]"))
+
+            # Get the destination coordinates (you might need a geocoding service for this)
+            # For now, let's assume the first valid coordinate is the destination's center
+            destination_coord = None
+            for activity in activities_data:
+                if activity.get("lat") is not None and activity.get("lng") is not None:
+                    destination_coord = (activity["lat"], activity["lng"])
+                    break
+            
+            # Filter out activities with None lat or lng and those too far from the destination
+            if destination_coord:
+                activities_data = [
+                    activity for activity in activities_data
+                    if activity.get("lat") is not None and activity.get("lng") is not None and
+                       get_distance(destination_coord, (activity["lat"], activity["lng"])) < 200  # 200km radius
+                ]
+            else:
+                activities_data = []
+            
+            # Get trip expenses
             activities = [
                 Activity(
                     time=a.get("time", ""),

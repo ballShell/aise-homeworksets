@@ -1,0 +1,121 @@
+{
+  "destination": "北京",
+  "daily_plan": [
+    {
+      "day": 1,
+      "title": "第一天：故宫与文化初探",
+      "summary": "参观故宫，感受明清皇家文化",
+      "activities": [
+        {
+          "time": "09:00",
+          "activity": "抵达北京首都国际机场",
+          "description": "办理入境手续，前往酒店",
+          "location_name": "北京首都国际机场T3航站楼",
+          "estimated_cost": 0
+        },
+        {
+          "time": "12:00",
+          "activity": "入住酒店",
+          "description": "放下行李，稍作休息",
+          "location_name": "北京王府井丽枫酒店",
+          "estimated_cost": 600
+        },
+        {
+          "time": "14:00",
+          "activity": "参观故宫",
+          "description": "游览明清皇家宫殿",
+          "location_name": "北京市东城区景山前街4号",
+          "estimated_cost": 60
+        },
+        {
+          "time": "18:00",
+          "activity": "晚餐",
+          "description": "品尝北京烤鸭",
+          "location_name": "大董（工体店）",
+          "estimated_cost": 200
+        }
+      ],
+      "daily_budget": 860
+    },
+    {
+      "day": 2,
+      "title": "第二天：长城与历史遗迹",
+      "summary": "登八达岭长城，感受古代军事防御体系",
+      "activities": [
+        {
+          "time": "08:00",
+          "activity": "早餐",
+          "description": "在酒店享用早餐",
+          "location_name": "北京王府井丽枫酒店",
+          "estimated_cost": 50
+        },
+        {
+          "time": "09:00",
+          "activity": "前往八达岭长城",
+          "description": "乘坐旅游巴士前往八达岭长城",
+          "location_name": "北京市延庆区八达岭镇",
+          "estimated_cost": 100
+        },
+        {
+          "time": "11:00",
+          "activity": "游览八达岭长城",
+          "description": "体验古代军事建筑和壮丽风光",
+          "location_name": "北京市延庆区八达岭镇",
+          "estimated_cost": 50
+        },
+        {
+          "time": "18:00",
+          "activity": "晚餐",
+          "description": "品尝京味小吃",
+          "location_name": "护国寺小吃（鼓楼店）",
+          "estimated_cost": 100
+        }
+      ],
+      "daily_budget": 300
+    },
+    {
+      "day": 3,
+      "title": "第三天：颐和园与胡同文化",
+      "summary": "游览皇家园林，体验老北京风情",
+      "activities": [
+        {
+          "time": "08:00",
+          "activity": "早餐",
+          "description": "在酒店享用早餐",
+          "location_name": "北京王府井丽枫酒店",
+          "estimated_cost": 50
+        },
+        {
+          "time": "09:00",
+          "activity": "参观颐和园",
+          "description": "欣赏清代皇家园林景观",
+          "location_name": "北京市海淀区新建宫门路19号",
+          "estimated_cost": 30
+        },
+        {
+          "time": "12:00",
+          "activity": "午餐",
+          "description": "品尝京味家常菜",
+          "location_name": "聚宝源（牛街总店）",
+          "estimated_cost": 150
+        },
+        {
+          "time": "14:00",
+          "activity": "游览南锣鼓巷",
+          "description": "探索老北京胡同文化",
+          "location_name": "北京市东城区南锣鼓巷",
+          "estimated_cost": 0
+        },
+        {
+          "time": "18:00",
+          "activity": "晚餐",
+          "description": "体验地道北京风味",
+          "location_name": "四季民福（故宫店）",
+          "estimated_cost": 200
+        }
+      ],
+      "daily_budget": 530
+    }
+  ],
+  "budget_analysis": "根据3天行程和1790元预算：住宿1800元（600元/晚×3晚），餐饮700元（233元/天），交通100元（33元/天），门票娱乐140元（47元/天），总计2740元。"
+}

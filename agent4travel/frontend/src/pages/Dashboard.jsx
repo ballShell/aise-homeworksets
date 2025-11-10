@@ -16,9 +16,9 @@ const Dashboard = () => {
 
   const loadTrips = async () => {
     try {
-      const response = await apiClient.get('/v1/trips')
+      const response = await apiClient.get('/trips')
       setTrips(response.data)
-    } catch (err) {
+    } catch (error) {
       console.error('Error loading trips:', err)
     }
   }
@@ -33,7 +33,7 @@ const Dashboard = () => {
     setError('')
 
     try {
-      const response = await apiClient.post('/v1/trips/plan', {
+      const response = await apiClient.post('/trips/plan', {
         prompt: prompt,
       })
       navigate(`/trip/${response.data.trip_id}`)
