@@ -25,13 +25,32 @@ class MapService:
                 response.raise_for_status()
                 data = response.json()
                 
-                if data.get("status") == "1" and data.get("count") > 0:
+                # 检查响应状态和结果数量
+                status = data.get("status")
+                count = data.get("count", 0)
+                
+                # 确保 count 是数字类型
+                if isinstance(count, str):
+                    try:
+                        count = int(count)
+                    except (ValueError, TypeError):
+                        count = 0
+                
+                if status == "1" and count > 0 and "geocodes" in data and len(data["geocodes"]) > 0:
                     # 获取第一个结果
-                    location = data["geocodes"][0]["location"]
-                    lng, lat = map(float, location.split(","))
-                    return {"lat": lat, "lng": lng}
+                    location = data["geocodes"][0].get("location", "")
+                    if location:
+                        try:
+                            lng, lat = map(float, location.split(","))
+                            return {"lat": lat, "lng": lng}
+                        except (ValueError, IndexError) as e:
+                            print(f"Error parsing location '{location}' for {location_name}: {str(e)}")
+                            return {"lat": None, "lng": None}
+                    else:
+                        return {"lat": None, "lng": None}
                 else:
                     # 未找到位置，返回 None
+                    print(f"No location found for {location_name}, status: {status}, count: {count}")
                     return {"lat": None, "lng": None}
         except Exception as e:
             # 发生错误时返回 None

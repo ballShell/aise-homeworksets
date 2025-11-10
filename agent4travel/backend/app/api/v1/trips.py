@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from fastapi import APIRouter, HTTPException, status
 from typing import List, Optional
 from uuid import UUID
 from app.models.schema import (
@@ -11,7 +11,6 @@ from app.models.schema import (
     DailyItinerary,
     Activity
 )
-from app.services.auth_service import auth_service
 from app.services.llm_service import llm_service
 from app.services.map_service import map_service
 from app.core.config import settings
@@ -29,24 +28,9 @@ supabase: Client = create_client(
 )
 
 
-def get_current_user(authorization: Optional[str] = Header(None)):
-    """依赖项：获取当前用户"""
-    if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Missing or invalid authorization header"
-        )
-    token = authorization.split(" ")[1]
-    user = auth_service.get_user_from_token(token)
-    return user
-
-
 @router.post("/plan", response_model=TripPlanResponse)
-async def create_trip_plan(
-    request: PlanRequest,
-    current_user: dict = Depends(get_current_user)
-):
-    """创建旅行计划"""
+async def create_trip_plan(request: PlanRequest):
+    """创建旅行计划（公开访问，无需登录）"""
     try:
         # 1. 调用 LLM 生成行程
         plan_data = llm_service.generate_trip_plan(request.prompt)
@@ -63,10 +47,8 @@ async def create_trip_plan(
         destination = plan_data.get("destination", "未知目的地")
         budget_analysis = plan_data.get("budget_analysis", "")
         
-        # 4. 保存到数据库
-        # 创建 trip 记录
+        # 4. 保存到数据库（无需 user_id）
         trip_data = {
-            "user_id": current_user["id"],
             "destination": destination,
             "raw_prompt": request.prompt,
             "preferences": None,  # 可以从 prompt 中提取，这里简化处理
@@ -124,12 +106,11 @@ async def create_trip_plan(
 
 
 @router.get("", response_model=List[TripListItem])
-async def get_trips(current_user: dict = Depends(get_current_user)):
-    """获取用户的所有旅行计划"""
+async def get_trips():
+    """获取所有旅行计划（公开访问，无需登录）"""
     try:
         response = supabase.table("trips")\
             .select("*")\
-            .eq("user_id", current_user["id"])\
             .execute()
         
         # 按创建时间排序（最新的在前）
@@ -159,17 +140,13 @@ async def get_trips(current_user: dict = Depends(get_current_user)):
 
 
 @router.get("/{trip_id}", response_model=TripDetailResponse)
-async def get_trip_detail(
-    trip_id: str,
-    current_user: dict = Depends(get_current_user)
-):
-    """获取旅行计划详情"""
+async def get_trip_detail(trip_id: str):
+    """获取旅行计划详情（公开访问，无需登录）"""
     try:
-        # 获取 trip
+        # 获取 trip（无需用户验证）
         trip_response = supabase.table("trips")\
             .select("*")\
             .eq("id", trip_id)\
-            .eq("user_id", current_user["id"])\
             .execute()
         
         if not trip_response.data:
@@ -260,11 +237,8 @@ async def get_trip_detail(
 
 
 @router.post("/expense", response_model=ExpenseResponse)
-async def create_expense(
-    expense: ExpenseCreate,
-    current_user: dict = Depends(get_current_user)
-):
-    """创建费用记录"""
+async def create_expense(expense: ExpenseCreate):
+    """创建费用记录（公开访问，无需登录）"""
     try:
         # 如果未提供 amount，使用 LLM 提取
         amount = expense.amount
@@ -277,10 +251,9 @@ async def create_expense(
             category = expense_data.get("category", "其他")
             description = expense_data.get("description", expense.description)
         
-        # 保存到数据库
+        # 保存到数据库（无需 user_id）
         expense_record = {
             "trip_id": str(expense.trip_id),
-            "user_id": current_user["id"],
             "description": description,
             "amount": amount,
             "category": category

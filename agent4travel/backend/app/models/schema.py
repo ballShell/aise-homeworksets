@@ -4,13 +4,8 @@ from datetime import date
 from uuid import UUID
 
 
-# --- 用户/认证 ---
-class UserCreate(BaseModel):
-    email: str
-    password: str
-
-
 # --- 核心：行程规划 ---
+# 注意：已移除用户认证相关模型，项目为公开访问
 class PlanRequest(BaseModel):
     prompt: str  # "我想去日本，5 天，预算 1 万元，喜欢美食和动漫"
 
